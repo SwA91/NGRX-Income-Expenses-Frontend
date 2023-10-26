@@ -3,7 +3,7 @@ import { Auth, User, createUserWithEmailAndPassword, signInWithEmailAndPassword,
 import { Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { User as DataUser } from '../models/user.model';
-import { CollectionReference, DocumentReference, Firestore, addDoc, collection } from '@angular/fire/firestore';
+import { setDoc, CollectionReference, Firestore, collection, doc } from '@angular/fire/firestore';
 
 
 @Injectable({
@@ -41,11 +41,10 @@ export class AuthService implements OnDestroy {
           email,
         );
 
-        addDoc(collection(this.firestore, `${user.uid}/user`), newUser)
-          .then((documentReference: DocumentReference) => {
-            console.log(documentReference);            
-          });
+        // Define the document reference
+        const myDocRef = doc(this.usersCollection, user.uid);
 
+        return setDoc(myDocRef, {...newUser});
       });
   }
 
