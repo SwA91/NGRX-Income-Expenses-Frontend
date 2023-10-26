@@ -3,6 +3,7 @@ import { BrowserModule } from '@angular/platform-browser';
 // Firebase
 import { provideFirebaseApp, initializeApp } from '@angular/fire/app';
 import { getAuth, provideAuth } from '@angular/fire/auth';
+import { getFirestore, provideFirestore } from '@angular/fire/firestore';
 
 // Own Modules
 import { AppRoutingModule } from './app-router.module';
@@ -39,6 +40,7 @@ import { environment } from 'src/environments/environment';
     ReactiveFormsModule,
     provideFirebaseApp(() => initializeApp(environment.firebase)),
     provideAuth(() => getAuth()),
+    provideFirestore(() => getFirestore())
   ],
   providers: [],
   bootstrap: [AppComponent]
