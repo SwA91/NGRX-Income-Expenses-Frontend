@@ -1,21 +1,21 @@
 import { Action, createReducer, on } from '@ngrx/store';
 import { isLoading, stopLoading } from './ui.action';
 
-export interface State {
-    isLoading: boolean; 
+export interface UiState {
+    isLoading: boolean;
 }
 
-export const initialState: State = {
+export const initialState: UiState = {
     isLoading: false,
 }
 
-const _counterReducer = createReducer(initialState,
+const _uiReducer = createReducer(initialState,
 
-    on(isLoading, state => ({ ...state, isLoading: true})),
-    on(stopLoading, state => ({ ...state, isLoading: false})),
+    on(isLoading, state => ({ ...state, isLoading: true })),
+    on(stopLoading, state => ({ ...state, isLoading: false })),
 
 );
 
-export function counterReducer(state: State | undefined, action: Action) {
-    return _counterReducer(state, action);
+export function uiReducer(state: UiState | undefined, action: Action) {
+    return _uiReducer(state, action);
 }
