@@ -1,41 +1,52 @@
 import { Injectable, OnDestroy, inject } from '@angular/core';
-import { Auth, User, createUserWithEmailAndPassword, signInWithEmailAndPassword, authState } from '@angular/fire/auth';
+import { Auth, createUserWithEmailAndPassword, signInWithEmailAndPassword, authState } from '@angular/fire/auth';
 import { Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { User as DataUser } from '../models/user.model';
-import { setDoc, CollectionReference, Firestore, collection, doc } from '@angular/fire/firestore';
+import { User as UserData } from '../models/user.model';
+import { setDoc, CollectionReference, Firestore, collection, doc, getDoc } from '@angular/fire/firestore';
+import { Store } from '@ngrx/store';
+import { AppState } from '../app.reducer';
+import * as authActions from '../auth/auth.actions';
 
 
 @Injectable({
   providedIn: 'root'
 })
-export class AuthService implements OnDestroy {
+export class AuthService {
 
   private auth: Auth = inject(Auth);
   authState$ = authState(this.auth);
-  authStateSubscription!: Subscription;
   private firestore: Firestore = inject(Firestore);
   usersCollection!: CollectionReference;
 
-  constructor() {
+  constructor(
+    private store: Store<AppState>
+  ) {
     this.usersCollection = collection(this.firestore, 'user')
   }
 
   initAuthListener() {
-    this.authState$.subscribe((fuser: User | null) => {
-      console.log('authStateSubscription: ', fuser);
-    })
+    this.authState$.subscribe(async (fAuth) => {
+      console.log('authState$: ', fAuth);
+
+      if (fAuth?.uid) {
+        const myDocRef = doc(this.usersCollection, fAuth.uid);
+        const fUser = (await getDoc(myDocRef)).data();
+        const user = UserData.fromFirebase(fUser);
+        this.store.dispatch(authActions.setUser({ user }))
+      } else {
+        this.store.dispatch(authActions.unSetUser());
+      }
+
+    });
   }
 
-  ngOnDestroy() {
-    this.authStateSubscription.unsubscribe();
-  }
 
   createUser(name: string, email: string, password: string) {
 
     return createUserWithEmailAndPassword(this.auth, email, password)
       .then(({ user }) => {
-        const newUser = new DataUser(
+        const newUser = new UserData(
           user.uid,
           name,
           email,
@@ -44,7 +55,7 @@ export class AuthService implements OnDestroy {
         // Define the document reference
         const myDocRef = doc(this.usersCollection, user.uid);
 
-        return setDoc(myDocRef, {...newUser});
+        return setDoc(myDocRef, { ...newUser });
       });
   }
 
