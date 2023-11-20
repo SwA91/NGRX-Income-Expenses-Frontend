@@ -33,12 +33,12 @@
                         </div>
 
                         <button type="submit" [disabled]="loginForm.invalid"
-                            class="btn btn-primary submit-btn btn-block" *ngIf="!cargando">
+                            class="btn btn-primary submit-btn btn-block" *ngIf="!loading">
                             Login
                         </button>
 
                         <button type="button" [disabled]="true" class="btn btn-primary submit-btn btn-block"
-                            *ngIf="cargando">
+                            *ngIf="loading">
                             <i class="fa fa-spin fa-sync"></i>
                             Espere...
                         </button>

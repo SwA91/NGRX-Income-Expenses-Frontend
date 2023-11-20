@@ -1,58 +1,51 @@
 <div class="row">
-    <div class="col-12">
-        <div class="card">
-          <div class="card-body">
-            <h4 class="card-title">Agregar Ingreso / Egreso</h4>
-            <p class="card-description">
-              Especifique el monto y el tipo
-            </p>
+  <div class="col-12">
+    <div class="card">
+      <div class="card-body">
+        <h4 class="card-title">Add Entry / Exit</h4>
+        <p class="card-description">
+          Specify a mount and type
+        </p>
 
-            <form>
-              
-              <div class="form-group">
-                <label>Descripción</label>
-                <input type="text" 
-                       class="form-control" 
-                       placeholder="Descripción"
-                       name="descripcion">
-              </div>
+        <form (ngSubmit)="save()" [formGroup]="entryExitForm">
 
-              <div class="form-group">
-                  <label>Monto</label>
-                  <input type="number" 
-                         class="form-control" 
-                         placeholder="Monto"
-                         name="monto">
-                    <p>
-                      Debe de ser un monto positivo
-                    </p>
-                </div>
-
-              <div class="form-group">
-                  <label>Tipo</label>
-                  <br>
-                  <button type="button" class="btn btn-primary btn-block">Ingreso</button>
-                  <!-- <button type="button" class="btn btn-warning btn-block">Egreso</button> -->
-              </div>
-
-              <hr>
-              <button type="button" class="btn btn-success mr-2">
-                <i class="fa fa-save"></i>
-                Agregar
-              </button>
-
-              <!-- 
-                <button disabled class="btn btn-success mr-2">
-                  <i class="fa fa-spin fa-sync"></i>
-                  Espere por favor...
-                </button> 
-              -->
-              
-              <button type="reset" class="btn btn-light">Cancelar</button>
-
-            </form>
+          <div class="form-group">
+            <label>Description</label>
+            <input type="text" class="form-control" formControlName="description" placeholder="Descripción"
+              name="descripcion">
           </div>
-        </div>
+
+          <div class="form-group">
+            <label>Mount</label>
+            <input type="number" formControlName="mount" class="form-control" placeholder="Monto" name="monto">
+            <p>
+              Must be a positive mount
+            </p>
+          </div>
+
+          <div class="form-group">
+            <label>Type</label>
+            <br>
+            <button *ngIf="entry" (click)="entry=false" type="button" class="btn btn-primary btn-block">Entry</button>
+            <button *ngIf="!entry" (click)="entry=true" type="button" class="btn btn-warning btn-block">Egreso</button>
+          </div>
+
+          <hr>
+          <button type="submit" [disabled]="entryExitForm.invalid" class="btn btn-success mr-2">
+            <ng-template [ngIf]="loading" [ngIfElse]="add">
+              <i class="fa fa-spin fa-sync"></i>
+              Saving...
+            </ng-template>
+            <ng-template #add>
+              <i class="fa fa-save"></i>
+              Add
+            </ng-template>
+          </button>
+
+          <button type="reset" class="btn btn-light">Cancelar</button>
+
+        </form>
       </div>
+    </div>
+  </div>
 </div>
-          

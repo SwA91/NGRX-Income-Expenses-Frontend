@@ -29,9 +29,9 @@ export class RegisterComponent implements OnInit, OnDestroy {
   }
   ngOnInit(): void {
     this.registerForm = this.fb.group({
-      name: ['', Validators.required],
-      email: ['', [Validators.required, Validators.email]],
-      password: ['', Validators.required]
+      name: ['user.X', Validators.required],
+      email: ['user.X@user.com', [Validators.required, Validators.email]],
+      password: ['567890', Validators.required]
     });
     this.uiSubscription = this.store.select('ui').subscribe(ui => this.cargando = ui.isLoading);
   }

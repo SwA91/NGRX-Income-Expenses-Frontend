@@ -1,12 +1,12 @@
-import { Injectable, OnDestroy, inject } from '@angular/core';
-import { Auth, createUserWithEmailAndPassword, signInWithEmailAndPassword, authState } from '@angular/fire/auth';
-import { Subscription } from 'rxjs';
-import { map } from 'rxjs/operators';
-import { User as UserData } from '../models/user.model';
-import { setDoc, CollectionReference, Firestore, collection, doc, getDoc } from '@angular/fire/firestore';
+import { Injectable, inject } from '@angular/core';
+import { Auth, authState, createUserWithEmailAndPassword, signInWithEmailAndPassword } from '@angular/fire/auth';
+import { CollectionReference, Firestore, collection, doc, getDoc, setDoc } from '@angular/fire/firestore';
 import { Store } from '@ngrx/store';
+import { map } from 'rxjs/operators';
 import { AppState } from '../app.reducer';
 import * as authActions from '../auth/auth.actions';
+import { TypeDocument } from '../enum/shared.enum';
+import { User, User as UserData } from '../models/user.model';
 
 
 @Injectable({
@@ -14,27 +14,28 @@ import * as authActions from '../auth/auth.actions';
 })
 export class AuthService {
 
+  private _user!: User;
   private auth: Auth = inject(Auth);
   authState$ = authState(this.auth);
   private firestore: Firestore = inject(Firestore);
-  usersCollection!: CollectionReference;
 
   constructor(
     private store: Store<AppState>
-  ) {
-    this.usersCollection = collection(this.firestore, 'user')
-  }
+  ) { }
 
   initAuthListener() {
+
     this.authState$.subscribe(async (fAuth) => {
-      console.log('authState$: ', fAuth);
 
       if (fAuth?.uid) {
-        const myDocRef = doc(this.usersCollection, fAuth.uid);
+        const myUsersCollection: CollectionReference = collection(this.firestore, fAuth.uid);
+        const myDocRef = doc(myUsersCollection, TypeDocument.USER);
         const fUser = (await getDoc(myDocRef)).data();
         const user = UserData.fromFirebase(fUser);
+        this._user = user;
         this.store.dispatch(authActions.setUser({ user }))
       } else {
+        this._user = new User('', '', '');
         this.store.dispatch(authActions.unSetUser());
       }
 
@@ -52,8 +53,8 @@ export class AuthService {
           email,
         );
 
-        // Define the document reference
-        const myDocRef = doc(this.usersCollection, user.uid);
+        const myUsersCollection: CollectionReference = collection(this.firestore, user.uid);
+        const myDocRef = doc(myUsersCollection, TypeDocument.USER);
 
         return setDoc(myDocRef, { ...newUser });
       });
@@ -71,5 +72,10 @@ export class AuthService {
     return this.authState$.pipe(
       map(fbUser => fbUser != null)
     );
+  }
+
+  get user() {
+    // avoid mutations
+    return { ...this._user };
   }
 }

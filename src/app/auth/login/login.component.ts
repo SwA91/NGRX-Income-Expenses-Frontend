@@ -5,7 +5,7 @@ import { Store } from '@ngrx/store';
 import { AppState } from 'src/app/app.reducer';
 import { AuthService } from 'src/app/services/auth.service';
 import Swal from 'sweetalert2';
-import * as ui from "../../shared/ui.action";
+import * as uiActions from "../../shared/ui.action";
 import { Subscription } from 'rxjs';
 
 @Component({
@@ -17,7 +17,7 @@ import { Subscription } from 'rxjs';
 export class LoginComponent implements OnInit, OnDestroy {
 
   loginForm!: FormGroup;
-  cargando: boolean = false;
+  loading: boolean = false;
   uiSubscription!: Subscription;
 
   constructor(
@@ -29,11 +29,11 @@ export class LoginComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.loginForm = this.fb.group({
-      email: ['', [Validators.required, Validators.email]],
-      password: ['', Validators.required]
+      email: ['user.X@user.com', [Validators.required, Validators.email]],
+      password: ['567890', Validators.required]
     });
 
-    this.uiSubscription = this.store.select('ui').subscribe(ui => this.cargando = ui.isLoading);
+    this.uiSubscription = this.store.select('ui').subscribe(ui => this.loading = ui.isLoading);
   }
 
   ngOnDestroy(): void {
@@ -44,7 +44,7 @@ export class LoginComponent implements OnInit, OnDestroy {
 
     if (this.loginForm.invalid) return;
 
-    this.store.dispatch(ui.isLoading())
+    this.store.dispatch(uiActions.isLoading())
 
     // lunch loading
     // Swal.fire({
@@ -58,16 +58,15 @@ export class LoginComponent implements OnInit, OnDestroy {
     this.authService.loginUser(email, password)
       .then(resp => {
         // Swal.close();
-        this.store.dispatch(ui.stopLoading())
         this.router.navigate(['/']);
       })
       .catch(err => {
-        this.store.dispatch(ui.stopLoading())
         Swal.fire({
           icon: 'error',
           title: 'Oops...',
           text: err.message,
         })
-      });
+      })
+      .finally(() => this.store.dispatch(uiActions.stopLoading()));
   }
 }
