@@ -1,9 +1,11 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
-import { filter, map } from 'rxjs/operators';
+import { filter } from 'rxjs/operators';
 import { AppState } from '../app.reducer';
+import * as EntryExitActions from '../income-expenses/income-expenses.actions';
 import { EntryExitService } from '../services/entry-exit.service';
+import { TypeStore } from '../enum/shared.enum';
 
 @Component({
   selector: 'app-dashboard',
@@ -22,31 +24,20 @@ export class DashboardComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
-    this.appStoreSub = this.appStore.select('user')
+    this.appStoreSub = this.appStore.select(TypeStore.USER)
       .pipe(
         filter((auth => !!auth.user))
       )
-      .subscribe((user) => {
-        this.initEntryExitListener();
+      .subscribe(() => {
+        this.entryExitServSubs = this.entryExitService.initEntryExitListener()
+          .subscribe((resp) => {
+            this.appStore.dispatch(EntryExitActions.setItems({ items: resp }));
+          });
       });
   }
 
   ngOnDestroy(): void {
     this.appStoreSub.unsubscribe();
     this.entryExitServSubs.unsubscribe();
-  }
-
-  private initEntryExitListener() {
-    this.entryExitServSubs = this.entryExitService.initEntryExitListener()
-      .pipe(
-        map((snapshot) =>
-          snapshot.docs.map((doc) =>
-            ({ ...doc.data(), uid: doc.id, })
-          )
-        )
-      )
-      .subscribe((resp) => {
-        console.log('initEntryExitListener', resp);
-      });
   }
 }

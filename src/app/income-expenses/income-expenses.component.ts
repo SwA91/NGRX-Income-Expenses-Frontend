@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { TypeEntry } from '../enum/shared.enum';
+import { TypeEntry, TypeStore } from '../enum/shared.enum';
 import { EntryExit } from '../models/entry-exit.model';
 import { EntryExitService } from '../services/entry-exit.service';
 import Swal from 'sweetalert2';
@@ -34,7 +34,7 @@ export class IncomeExpensesComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.uiSubs = this.store.select('ui').subscribe(ui => this.loading = ui.isLoading);
+    this.uiSubs = this.store.select(TypeStore.UI).subscribe(ui => this.loading = ui.isLoading);
   }
 
   ngOnDestroy(): void {

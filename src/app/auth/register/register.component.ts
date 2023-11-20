@@ -7,6 +7,7 @@ import { AppState } from 'src/app/app.reducer';
 import { AuthService } from 'src/app/services/auth.service';
 import Swal from 'sweetalert2';
 import * as ui from "../../shared/ui.action";
+import { TypeStore } from 'src/app/enum/shared.enum';
 
 @Component({
   selector: 'app-register',
@@ -33,7 +34,7 @@ export class RegisterComponent implements OnInit, OnDestroy {
       email: ['user.X@user.com', [Validators.required, Validators.email]],
       password: ['567890', Validators.required]
     });
-    this.uiSubscription = this.store.select('ui').subscribe(ui => this.cargando = ui.isLoading);
+    this.uiSubscription = this.store.select(TypeStore.UI).subscribe(ui => this.cargando = ui.isLoading);
   }
 
   ngOnDestroy(): void {

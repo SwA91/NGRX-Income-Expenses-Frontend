@@ -7,6 +7,7 @@ import { AuthService } from 'src/app/services/auth.service';
 import Swal from 'sweetalert2';
 import * as uiActions from "../../shared/ui.action";
 import { Subscription } from 'rxjs';
+import { TypeStore } from 'src/app/enum/shared.enum';
 
 @Component({
   selector: 'app-login',
@@ -33,7 +34,7 @@ export class LoginComponent implements OnInit, OnDestroy {
       password: ['567890', Validators.required]
     });
 
-    this.uiSubscription = this.store.select('ui').subscribe(ui => this.loading = ui.isLoading);
+    this.uiSubscription = this.store.select(TypeStore.UI).subscribe(ui => this.loading = ui.isLoading);
   }
 
   ngOnDestroy(): void {

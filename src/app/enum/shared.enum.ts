@@ -8,3 +8,8 @@ export enum TypeEntry {
     ENTRY = 'entry',
     EXIT = 'exit'
 }
+
+export enum TypeStore{
+    UI = 'ui',
+    USER = 'user',
+}
