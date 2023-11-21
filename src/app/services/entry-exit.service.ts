@@ -20,6 +20,10 @@ export class EntryExitService {
     private authService: AuthService
   ) { }
 
+  deleteEntryExit(uidItem: string) {
+
+  }
+
   initEntryExitListener() {
     const q = query(collection(this.dbFirestore, this.authService.user.uid, TypeDocument.ENTRY_EXIT, TypeDocument.ITEMS));
     return new Observable<EntryExit[]>(subscriber => {

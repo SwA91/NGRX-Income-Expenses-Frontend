@@ -12,4 +12,5 @@ export enum TypeEntry {
 export enum TypeStore{
     UI = 'ui',
     USER = 'user',
+    ENTRY_EXIT = 'entryExit',
 }

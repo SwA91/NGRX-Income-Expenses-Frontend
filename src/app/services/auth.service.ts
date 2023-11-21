@@ -7,6 +7,7 @@ import { AppState } from '../app.reducer';
 import * as authActions from '../auth/auth.actions';
 import { TypeDocument } from '../enum/shared.enum';
 import { User, User as UserData } from '../models/user.model';
+import * as entryExitActions from '../income-expenses/income-expenses.actions';
 
 
 @Injectable({
@@ -37,6 +38,7 @@ export class AuthService {
       } else {
         this._user = new User('', '', '');
         this.store.dispatch(authActions.unSetUser());
+        this.store.dispatch(entryExitActions.unSetItems());
       }
 
     });

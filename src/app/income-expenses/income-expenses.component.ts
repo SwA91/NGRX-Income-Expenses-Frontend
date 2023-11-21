@@ -38,8 +38,8 @@ export class IncomeExpensesComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.uiSubs.unsubscribe();
-    this.entryExitServiceSubs.unsubscribe();
+    this.uiSubs?.unsubscribe();
+    this.entryExitServiceSubs?.unsubscribe();
   }
 
   save() {
