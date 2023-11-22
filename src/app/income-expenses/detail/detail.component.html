@@ -15,7 +15,7 @@
               </thead>
 
               <tbody>
-                <tr *ngFor="let item of entryExit">
+                <tr *ngFor="let item of entryExit | shortEntry">
                   <td>{{item.description}}</td>
                   <td>{{item.mount | currency}}</td>
                   <td 

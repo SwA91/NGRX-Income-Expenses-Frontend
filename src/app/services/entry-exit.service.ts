@@ -1,7 +1,7 @@
-import { Injectable, NgZone, inject } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { Auth, authState } from '@angular/fire/auth';
-import { Firestore, addDoc, collection, onSnapshot, query } from '@angular/fire/firestore';
-import { Observable, from } from 'rxjs';
+import { Firestore, addDoc, collection, collectionSnapshots, deleteDoc, doc } from '@angular/fire/firestore';
+import { from, map } from 'rxjs';
 import { TypeDocument } from '../enum/shared.enum';
 import { EntryExit } from '../models/entry-exit.model';
 import { AuthService } from './auth.service';
@@ -16,28 +16,28 @@ export class EntryExitService {
   private dbFirestore: Firestore = inject(Firestore);
 
   constructor(
-    private ngZone: NgZone,
     private authService: AuthService
   ) { }
 
-  deleteEntryExit(uidItem: string) {
+  deleteEntryExit(uidItem?: string) {
+
+    if (!uidItem) return Promise.reject(false);
+
+    return deleteDoc(doc(this.dbFirestore,
+      this.authService.user.uid,
+      TypeDocument.ENTRY_EXIT,
+      TypeDocument.ITEMS,
+      uidItem
+    ));
 
   }
 
   initEntryExitListener() {
-    const q = query(collection(this.dbFirestore, this.authService.user.uid, TypeDocument.ENTRY_EXIT, TypeDocument.ITEMS));
-    return new Observable<EntryExit[]>(subscriber => {
-      // Observable o promesa muere al pasar por el unsubscribe del observable
-      onSnapshot(q, (resp) => {
-        const data: any[] = [];
-        resp.forEach((doc) => {
-          data.push({ ...doc.data(), uid: doc.id, });
-        });
-        this.ngZone.run(() => {
-          subscriber.next(data);
-        });
-      })
-    });
+    return collectionSnapshots(
+      collection(this.dbFirestore, this.authService.user.uid, TypeDocument.ENTRY_EXIT, TypeDocument.ITEMS)
+    ).pipe(
+      map((resp) => resp.map((doc) => ({ ...doc.data(), uid: doc.id, })))
+    );
   }
 
   addEntryExit(entryExit: EntryExit) {

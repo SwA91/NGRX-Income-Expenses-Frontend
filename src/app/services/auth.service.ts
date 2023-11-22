@@ -1,14 +1,13 @@
 import { Injectable, inject } from '@angular/core';
 import { Auth, authState, createUserWithEmailAndPassword, signInWithEmailAndPassword } from '@angular/fire/auth';
-import { CollectionReference, Firestore, collection, doc, getDoc, setDoc } from '@angular/fire/firestore';
+import { CollectionReference, Firestore, collection, doc, docSnapshots, setDoc } from '@angular/fire/firestore';
 import { Store } from '@ngrx/store';
-import { map } from 'rxjs/operators';
+import { map, takeWhile } from 'rxjs/operators';
 import { AppState } from '../app.reducer';
 import * as authActions from '../auth/auth.actions';
 import { TypeDocument } from '../enum/shared.enum';
-import { User, User as UserData } from '../models/user.model';
 import * as entryExitActions from '../income-expenses/income-expenses.actions';
-
+import { User, User as UserData } from '../models/user.model';
 
 @Injectable({
   providedIn: 'root'
@@ -17,8 +16,9 @@ export class AuthService {
 
   private _user!: User;
   private auth: Auth = inject(Auth);
-  authState$ = authState(this.auth);
+  private authState$ = authState(this.auth);
   private firestore: Firestore = inject(Firestore);
+  private isLogin: boolean = false;
 
   constructor(
     private store: Store<AppState>
@@ -28,13 +28,18 @@ export class AuthService {
 
     this.authState$.subscribe(async (fAuth) => {
 
+      this.isLogin = !!fAuth?.uid;
+
       if (fAuth?.uid) {
-        const myUsersCollection: CollectionReference = collection(this.firestore, fAuth.uid);
-        const myDocRef = doc(myUsersCollection, TypeDocument.USER);
-        const fUser = (await getDoc(myDocRef)).data();
-        const user = UserData.fromFirebase(fUser);
-        this._user = user;
-        this.store.dispatch(authActions.setUser({ user }))
+
+        this.snapShotUser(fAuth.uid)
+          .pipe(takeWhile(() => this.isLogin))
+          .subscribe((resp) => {
+            const user = UserData.fromFirebase(resp);
+            this._user = user;
+            this.store.dispatch(authActions.setUser({ user }))
+          });
+
       } else {
         this._user = new User('', '', '');
         this.store.dispatch(authActions.unSetUser());
@@ -74,6 +79,10 @@ export class AuthService {
     return this.authState$.pipe(
       map(fbUser => fbUser != null)
     );
+  }
+
+  private snapShotUser(uid: string) {
+    return docSnapshots(doc(this.firestore, uid, TypeDocument.USER)).pipe(map(data => data.data()));
   }
 
   get user() {

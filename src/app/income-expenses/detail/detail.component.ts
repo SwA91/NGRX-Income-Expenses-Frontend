@@ -4,6 +4,8 @@ import { Subscription } from 'rxjs';
 import { AppState } from 'src/app/app.reducer';
 import { TypeEntry, TypeStore } from 'src/app/enum/shared.enum';
 import { EntryExit } from 'src/app/models/entry-exit.model';
+import { EntryExitService } from 'src/app/services/entry-exit.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-detail',
@@ -13,18 +15,20 @@ import { EntryExit } from 'src/app/models/entry-exit.model';
 })
 export class DetailComponent implements OnInit, OnDestroy {
 
-  entryExit: EntryExit[] = [];
+  public entryExit: EntryExit[] = [];
   public typeEntry = TypeEntry;
   private entrySubs!: Subscription;
 
   constructor(
+    private entryExitServices: EntryExitService,
     private storeApp: Store<AppState>
   ) { }
 
   ngOnInit(): void {
     this.entrySubs = this.storeApp.select(TypeStore.ENTRY_EXIT)
       .subscribe(({ items }) => {
-        this.entryExit = items;
+        // avoid modify the store
+        this.entryExit = [...items];
       });
   }
 
@@ -32,8 +36,18 @@ export class DetailComponent implements OnInit, OnDestroy {
     this.entrySubs?.unsubscribe();
   }
 
-  delete(uid: string | undefined) {
-    console.log('Hey!!!', uid);
+  delete(uidItem?: string) {
+
+    if (!uidItem) return;
+
+    this.entryExitServices.deleteEntryExit(uidItem)
+      .then(() => {
+        Swal.fire({
+          icon: 'success',
+          title: 'Detail deleted',
+        })
+      })
+      .catch((err) => console.log('catch', err));
   }
 
 }
