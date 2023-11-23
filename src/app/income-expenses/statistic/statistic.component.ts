@@ -1,10 +1,10 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { ChartData } from 'chart.js';
-import { AppState } from 'src/app/app.reducer';
+import { BaseChartDirective } from "ng2-charts";
 import { TypeEntry, TypeStore } from 'src/app/enum/shared.enum';
 import { EntryExit } from 'src/app/models/entry-exit.model';
-import { BaseChartDirective } from "ng2-charts";
+import { AppStateWithIncomeExpenses } from '../income-expenses.reducer';
 
 @Component({
   selector: 'app-statistic',
@@ -29,7 +29,7 @@ export class StatisticComponent implements OnInit {
   @ViewChild(BaseChartDirective) myDoughnut?: BaseChartDirective;
 
   constructor(
-    private store: Store<AppState>
+    private store: Store<AppStateWithIncomeExpenses>
   ) { }
 
   ngOnInit(): void {

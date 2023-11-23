@@ -1,13 +1,13 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
+import { Subscription } from 'rxjs';
 import { AppState } from 'src/app/app.reducer';
+import { TypeStore } from 'src/app/enum/shared.enum';
 import { AuthService } from 'src/app/services/auth.service';
 import Swal from 'sweetalert2';
 import * as uiActions from "../../shared/ui.action";
-import { Subscription } from 'rxjs';
-import { TypeStore } from 'src/app/enum/shared.enum';
 
 @Component({
   selector: 'app-login',
@@ -30,7 +30,7 @@ export class LoginComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.loginForm = this.fb.group({
-      email: ['user.X@user.com', [Validators.required, Validators.email]],
+      email: ['user.1@user.com', [Validators.required, Validators.email]],
       password: ['567890', Validators.required]
     });
 
@@ -57,7 +57,7 @@ export class LoginComponent implements OnInit, OnDestroy {
 
     const { email, password } = this.loginForm.value;
     this.authService.loginUser(email, password)
-      .then(resp => {
+      .then(() => {
         // Swal.close();
         this.router.navigate(['/']);
       })

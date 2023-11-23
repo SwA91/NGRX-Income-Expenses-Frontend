@@ -1,17 +1,29 @@
-import { CanActivateFn, Router } from '@angular/router';
-import { AuthService } from './auth.service';
 import { inject } from '@angular/core';
-import { tap } from 'rxjs/operators';
+import { CanActivateFn, CanMatchFn, Router } from '@angular/router';
+import { take, tap } from 'rxjs/operators';
+import { AuthService } from './auth.service';
 
-
-export const authGuard: CanActivateFn = (route, state) => {
-  const authService: AuthService = inject(AuthService);
-  const router: Router = inject(Router);
+export const canMatchAuth: CanMatchFn = () => {
+  const authService = inject(AuthService);
+  const router = inject(Router);
 
   return authService.isAuth()
     .pipe(
       tap(status => {
-        if(!status) router.navigate(['/login']);
+        if (!status) router.navigate(['/login']);
+      }),
+      take(1)
+    );
+};
+
+export const authGuard: CanActivateFn = () => {
+  const authService = inject(AuthService);
+  const router = inject(Router);
+
+  return authService.isAuth()
+    .pipe(
+      tap(status => {
+        if (!status) router.navigate(['/login']);
       })
     );
 };

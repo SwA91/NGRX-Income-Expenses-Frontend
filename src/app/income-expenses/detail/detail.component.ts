@@ -6,6 +6,7 @@ import { TypeEntry, TypeStore } from 'src/app/enum/shared.enum';
 import { EntryExit } from 'src/app/models/entry-exit.model';
 import { EntryExitService } from 'src/app/services/entry-exit.service';
 import Swal from 'sweetalert2';
+import { AppStateWithIncomeExpenses } from '../income-expenses.reducer';
 
 @Component({
   selector: 'app-detail',
@@ -21,7 +22,7 @@ export class DetailComponent implements OnInit, OnDestroy {
 
   constructor(
     private entryExitServices: EntryExitService,
-    private storeApp: Store<AppState>
+    private storeApp: Store<AppStateWithIncomeExpenses>
   ) { }
 
   ngOnInit(): void {
