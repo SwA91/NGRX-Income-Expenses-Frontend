@@ -28,7 +28,7 @@ export class IncomeExpensesComponent implements OnInit, OnDestroy {
     private entryExitService: EntryExitService
   ) {
     this.entryExitForm = new FormGroup({
-      description: new FormControl('Des-X', Validators.required),
+      description: new FormControl('', Validators.required),
       mount: new FormControl('', Validators.required)
     });
   }

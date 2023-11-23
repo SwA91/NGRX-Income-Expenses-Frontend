@@ -2,7 +2,7 @@
   <div class="content-wrapper d-flex align-items-center auth register-bg-1 theme-one">
     <div class="row w-100">
       <div class="col-lg-4 mx-auto">
-        <h2 class="text-center mb-4">Registro</h2>
+        <h2 class="text-center mb-4">Register</h2>
         <div class="auto-form-wrapper">
 
           <form [formGroup]="registerForm" (ngSubmit)="createUser()">
@@ -10,7 +10,7 @@
             <div class="form-group">
               <div class="input-group">
 
-                <input formControlName="name" type="text" class="form-control" placeholder="Nombre">
+                <input formControlName="name" type="text" class="form-control" placeholder="Name">
 
                 <div class="input-group-append">
                   <span class="input-group-text">
@@ -23,7 +23,7 @@
             <div class="form-group">
               <div class="input-group">
 
-                <input formControlName="email" type="email" class="form-control" placeholder="Correo">
+                <input formControlName="email" type="email" class="form-control" placeholder="Email">
 
                 <div class="input-group-append">
                   <span class="input-group-text">
@@ -54,12 +54,12 @@
 
               <button type="button" [disabled]="true" class="btn btn-primary submit-btn btn-block" *ngIf="cargando">
                 <i class="fa fa-spin fa-sync"></i>
-                Espere...
+                Hold on...
               </button>
             </div>
 
             <div class="text-block text-center my-3">
-              <span class="text-small font-weight-semibold">ya tienes una cuenta?</span>
+              <span class="text-small font-weight-semibold">Already have an account?</span>
               <br>
               <a routerLink="/login" class="text-black text-small">Login</a>
             </div>

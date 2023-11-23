@@ -2,7 +2,7 @@
   <div class="col-12">
     <div class="card">
       <div class="card-body">
-        <h4 class="card-title">Add Entry / Exit</h4>
+        <h4 class="card-title">Add Income / Expenses</h4>
         <p class="card-description">
           Specify a mount and type
         </p>
@@ -11,13 +11,13 @@
 
           <div class="form-group">
             <label>Description</label>
-            <input type="text" class="form-control" formControlName="description" placeholder="Descripción"
+            <input type="text" class="form-control" formControlName="description" placeholder="Description"
               name="descripcion">
           </div>
 
           <div class="form-group">
             <label>Mount</label>
-            <input type="number" formControlName="mount" class="form-control" placeholder="Monto" name="monto">
+            <input type="number" formControlName="mount" class="form-control" placeholder="Monto" name="mount">
             <p>
               Must be a positive mount
             </p>
@@ -26,8 +26,8 @@
           <div class="form-group">
             <label>Type</label>
             <br>
-            <button *ngIf="entry" (click)="entry=false" type="button" class="btn btn-primary btn-block">Entry</button>
-            <button *ngIf="!entry" (click)="entry=true" type="button" class="btn btn-warning btn-block">Egreso</button>
+            <button *ngIf="entry" (click)="entry=false" type="button" class="btn btn-primary btn-block">Income</button>
+            <button *ngIf="!entry" (click)="entry=true" type="button" class="btn btn-warning btn-block">Expenses</button>
           </div>
 
           <hr>
@@ -42,7 +42,7 @@
             </ng-template>
           </button>
 
-          <button type="reset" class="btn btn-light">Cancelar</button>
+          <button type="reset" class="btn btn-light">Cancel</button>
 
         </form>
       </div>
