@@ -1,6 +1,7 @@
 # IncomeExpenses
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 16.2.4.
+And deploying in https://ngrx-income-expenses-d7548.web.app/login
 
 ## Development server
 
